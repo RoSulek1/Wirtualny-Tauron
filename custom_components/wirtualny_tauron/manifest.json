@@ -4,3 +4,9 @@
   "codeowners": ["@RoSulek1"],
   "config_flow": true,
   "documentation": "https://github.com/RoSulek1/wirtualny-tauron",
+  "integration_type": "hub",
+  "iot_class": "calculated",
+  "issue_tracker": "https://github.com/RoSulek1/wirtualny-tauron/issues",
+  "requirements": [],
+  "version": "1.0.0"
+}
