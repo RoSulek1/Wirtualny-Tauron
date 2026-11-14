@@ -52,15 +52,37 @@ class WirtualnyTauronSensor(CoordinatorEntity[WirtualnyTauronCoordinator], Senso
     ) -> None:
         super().__init__(coordinator)
         self._entry = entry
-        self._kind = kind
         self._attr_unique_id = f"{entry.entry_id}_{kind}"
         self._attr_device_info = DeviceInfo(
             identifiers={(DOMAIN, entry.entry_id)},
             name="Wirtualny Tauron",
             manufacturer="RoSulek1",
             model="Emulator magazynu energii (system opustów)",
-            sw_version="1.0.0",
+            sw_version="1.1.0",
         )
+
+
+class MagazynSensor(WirtualnyTauronSensor):
+    """Stan wirtualnego magazynu (kWh do odebrania u sprzedawcy)."""
+
+    _attr_name = "Magazyn"
+    _attr_native_unit_of_measurement = UnitOfEnergy.KILO_WATT_HOUR
+    _attr_device_class = SensorDeviceClass.ENERGY_STORAGE
+    _attr_state_class = SensorStateClass.TOTAL
+    _attr_icon = "mdi:battery-charging"
+    _attr_suggested_display_precision = 2
+
+    def __init__(
+        self, coordinator: WirtualnyTauronCoordinator, entry: ConfigEntry
+    ) -> None:
+        super().__init__(coordinator, entry, "magazyn")
+
+    @property
+    def native_value(self) -> float | None:
+        data = self.coordinator.data
+        if not data:
+            return None
+        return round(float(data["stored"]), 3)
 
     @property
     def extra_state_attributes(self) -> dict[str, Any]:
@@ -74,24 +96,6 @@ class WirtualnyTauronSensor(CoordinatorEntity[WirtualnyTauronCoordinator], Senso
         }
 
 
-class MagazynSensor(WirtualnyTauronSensor):
-    """Stan wirtualnego magazynu (kWh do odebrania u sprzedawcy)."""
-
-    _attr_name = "Magazyn"
-    _attr_native_unit_of_measurement = UnitOfEnergy.KILO_WATT_HOUR
-    _attr_device_class = SensorDeviceClass.ENERGY_STORAGE
-    _attr_state_class = SensorStateClass.TOTAL
-    _attr_icon = "mdi:battery-charging"
-    _attr_suggested_display_precision = 2
-
-    @property
-    def native_value(self) -> float | None:
-        data = self.coordinator.data
-        if not data:
-            return None
-        return round(float(data["stored"]), 3)
-
-
 class OddaneSensor(WirtualnyTauronSensor):
     """Energia oddana do sieci od instalacji komponentu."""
 
@@ -101,6 +105,11 @@ class OddaneSensor(WirtualnyTauronSensor):
     _attr_state_class = SensorStateClass.TOTAL_INCREASING
     _attr_icon = "mdi:transmission-tower-export"
     _attr_suggested_display_precision = 2
+
+    def __init__(
+        self, coordinator: WirtualnyTauronCoordinator, entry: ConfigEntry
+    ) -> None:
+        super().__init__(coordinator, entry, "oddane")
 
     @property
     def native_value(self) -> float | None:
@@ -119,6 +128,11 @@ class PobraneSensor(WirtualnyTauronSensor):
     _attr_state_class = SensorStateClass.TOTAL_INCREASING
     _attr_icon = "mdi:transmission-tower-import"
     _attr_suggested_display_precision = 2
+
+    def __init__(
+        self, coordinator: WirtualnyTauronCoordinator, entry: ConfigEntry
+    ) -> None:
+        super().__init__(coordinator, entry, "pobrane")
 
     @property
     def native_value(self) -> float | None:
