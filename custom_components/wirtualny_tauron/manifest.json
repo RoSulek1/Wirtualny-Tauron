@@ -1,12 +1,6 @@
 {
+  "domain": "wirtualny_tauron",
+  "name": "Wirtualny Tauron",
   "codeowners": ["@RoSulek1"],
   "config_flow": true,
   "documentation": "https://github.com/RoSulek1/wirtualny-tauron",
-  "domain": "wirtualny_tauron",
-  "integration_type": "hub",
-  "iot_class": "calculated",
-  "issue_tracker": "https://github.com/RoSulek1/wirtualny-tauron/issues",
-  "name": "Wirtualny Tauron",
-  "requirements": [],
-  "version": "1.0.0"
-}
