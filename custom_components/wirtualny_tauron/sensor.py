@@ -33,6 +33,7 @@ async def async_setup_entry(
     async_add_entities(
         [
             MagazynSensor(coordinator, entry),
+            DopisaneSensor(coordinator, entry),
             OddaneSensor(coordinator, entry),
             PobraneSensor(coordinator, entry),
         ]
@@ -94,6 +95,36 @@ class MagazynSensor(WirtualnyTauronSensor):
             "base_stored": self._entry.data.get(CONF_BASE_STORED),
             "stale": bool(data.get("stale", False)),
         }
+
+
+class DopisaneSensor(WirtualnyTauronSensor):
+    """Energia dopisana do wirtualnego magazynu (stan + wspolczynnik * oddana).
+
+    Licznik total_increasing dla panelu Energii (pole "energia wprowadzona
+    do magazynu"). Zawiera w sobie stan poczatkowy, wiec panel wyliczy
+    poziom magazynu jako: dopisane - pobrane.
+    """
+
+    _attr_name = "Dopisane do magazynu"
+    _attr_native_unit_of_measurement = UnitOfEnergy.KILO_WATT_HOUR
+    _attr_device_class = SensorDeviceClass.ENERGY
+    _attr_state_class = SensorStateClass.TOTAL_INCREASING
+    _attr_icon = "mdi:battery-arrow-up"
+    _attr_suggested_display_precision = 2
+
+    def __init__(
+        self, coordinator: WirtualnyTauronCoordinator, entry: ConfigEntry
+    ) -> None:
+        super().__init__(coordinator, entry, "dopisane")
+
+    @property
+    def native_value(self) -> float | None:
+        data = self.coordinator.data
+        if not data:
+            return None
+        return round(
+            float(data["stored"]) + float(data["retrieved_since"]), 3
+        )
 
 
 class OddaneSensor(WirtualnyTauronSensor):
