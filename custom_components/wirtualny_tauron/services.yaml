@@ -1,0 +1,28 @@
+set_stored_energy:
+  name: Ustaw stan magazynu
+  description: >-
+    Ustawia stan wirtualnego magazynu (ilość kWh do odebrania u sprzedawcy)
+    na wartość z faktury lub portalu e-Dystrybucja. Resetuje też punkty
+    odniesienia liczników źródłowych, więc dalsze naliczanie jest poprawne.
+  fields:
+    stored_energy:
+      name: Stan magazynu
+      description: Aktualna ilość energii do odebrania w kWh.
+      required: true
+      example: 1234.5
+      selector:
+        number:
+          min: 0
+          max: 1000000
+          step: 0.1
+          mode: box
+          unit_of_measurement: kWh
+    config_entry_id:
+      name: Wpis konfiguracji
+      description: >-
+        Opcjonalne, wymagane tylko gdy masz więcej niż jedną instancję
+        integracji.
+      required: false
+      selector:
+        config_entry:
+          integration: wirtualny_tauron

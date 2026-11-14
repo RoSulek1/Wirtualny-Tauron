@@ -1,0 +1,51 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Wirtualny Tauron",
+        "description": "Emulator magazynu energii dla rozliczeń prosumenckich (stary system opustów). Stan magazynu = stan początkowy + oddana × współczynnik − pobrana.",
+        "data": {
+          "source_fed": "Encja energii oddanej do sieci (kWh, total_increasing)",
+          "source_retrieved": "Encja energii pobranej z sieci (kWh, total_increasing)",
+          "coefficient": "Współczynnik za oddaną energię (0,8 dla instalacji ≤10 kW)",
+          "initial_stored": "Stan początkowy magazynu — kWh do odebrania (z faktury/portalu)"
+        }
+      }
+    },
+    "error": {
+      "entity_missing": "Encja nie istnieje w Home Assistant."
+    },
+    "abort": {
+      "already_configured": "Ta instancja jest już skonfigurowana."
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Wirtualny Tauron — opcje",
+        "description": "Zmiana współczynnika lub źródeł działa od teraz: aktualny stan magazynu zostaje zachowany (rebase).",
+        "data": {
+          "source_fed": "Encja energii oddanej do sieci",
+          "source_retrieved": "Encja energii pobranej z sieci",
+          "coefficient": "Współczynnik za oddaną energię"
+        }
+      }
+    }
+  },
+  "services": {
+    "set_stored_energy": {
+      "name": "Ustaw stan magazynu",
+      "description": "Ustawia stan magazynu (kWh do odebrania) na wartość z faktury lub portalu e-Dystrybucja i resetuje punkty odniesienia liczników źródłowych.",
+      "fields": {
+        "stored_energy": {
+          "name": "Stan magazynu",
+          "description": "Aktualna ilość energii do odebrania w kWh."
+        },
+        "config_entry_id": {
+          "name": "Wpis konfiguracji",
+          "description": "Opcjonalne, przy więcej niż jednej instancji."
+        }
+      }
+    }
+  }
+}
